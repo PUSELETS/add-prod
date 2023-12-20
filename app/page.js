@@ -133,7 +133,7 @@ export default function AdminAddNewProduct() {
     }
   }
 
-  
+
 
   return (
     <Dialog.Root>
@@ -150,7 +150,25 @@ export default function AdminAddNewProduct() {
             </Dialog.Close>
           </div>
           <div className="mt-8 space-y-6">
-            <input 
+
+            <div className="px-4 py-5">
+              <div className="relative">
+                <h2 className="font-semibold text-start text-gray-900">Add 5 0r Less Pictures</h2>
+                <div className="absolute inset-y-0 right-0">
+                  <button type="submit" className="font-medium text-sky-500">
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+              <div className="p-3 h-auto">
+                <div className="relative rounded-full aspect-[1]">
+                  <button className="absolute inset-0 flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-full aspect-[1]">
+                    <div className="w-24 h-24 text-gray-200">+</div>
+                  </button>
+                </div>
+              </div>
+            <input
               accept="image/*"
               max="1000000"
               type="file"
