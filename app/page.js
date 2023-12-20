@@ -136,31 +136,32 @@ export default function AdminAddNewProduct() {
 
 
   return (
-    <Dialog.Root>
-      <Dialog.Trigger className="bg-yellow-300 m-4 p-4 shadow fixed z-10 top-1/2 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md">
-        add new product
-      </Dialog.Trigger>
-      <Dialog.Portal className='z-10'>
-        <Dialog.Overlay className='fixed inset-0 bg-black/50 z-10' />
-        <Dialog.Content className='fixed z-10 w-full max-w-md sm:max-w-xs top-1/2 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white p-8 text-gray-900 shadow'>
-          <div className='flex justify-between items-center'>
-            <h2 className='text-xl'>Adding Product</h2>
-            <Dialog.Close className='text-gray-400 hover:text-gray-500'>
-              exit
-            </Dialog.Close>
-          </div>
-          <div className="mt-8 space-y-6">
+    <>
+      <Dialog.Root>
+        <Dialog.Trigger className="bg-yellow-300 m-4 p-4 shadow z-10  rounded-md">
+          Add Picture
+        </Dialog.Trigger>
+        <Dialog.Portal className='z-10'>
+          <Dialog.Overlay className='inset-0 bg-black/50 z-10' />
+          <Dialog.Content className='fixed z-10 w-full max-w-md sm:max-w-xs top-1/2 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white p-8 text-gray-900 shadow'>
+            <div className='flex justify-between items-center'>
+              <h2 className='text-xl'>Adding Product</h2>
+              <Dialog.Close className='text-gray-400 hover:text-gray-500'>
+                exit
+              </Dialog.Close>
+            </div>
+            <div className="mt-8 space-y-6">
 
-            <div className="px-4 py-5">
-              <div className="relative">
-                <h2 className="font-semibold text-start text-gray-900">Add 5 0r Less Pictures</h2>
-                <div className="absolute inset-y-0 right-0">
-                  <button type="submit" className="font-medium text-sky-500">
-                    Save
-                  </button>
+              <div className="px-4 py-5">
+                <div className="relative">
+                  <h2 className="font-semibold text-start text-gray-900">Add 5 0r Less Pictures</h2>
+                  <div className="absolute inset-y-0 right-0">
+                    <button type="submit" className="font-medium text-sky-500">
+                      Save
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
               <div className="p-3 h-auto">
                 <div className="relative rounded-full aspect-[1]">
                   <button className="absolute inset-0 flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-full aspect-[1]">
@@ -168,52 +169,54 @@ export default function AdminAddNewProduct() {
                   </button>
                 </div>
               </div>
-            <input
-              accept="image/*"
-              max="1000000"
-              type="file"
-              onChange={handleImage}
-            />
-            {adminAddProductformControls.map((controlItem) =>
-              controlItem.componentType === "input" ? (
-                <InputComponent
-                  key={controlItem.label}
-                  type={controlItem.type}
-                  placeholder={controlItem.placeholder}
-                  label={controlItem.label}
-                  value={formData[controlItem.id]}
-                  onChange={(event) => {
-                    setFormData({
-                      ...formData,
-                      [controlItem.id]: event.target.value,
-                    });
-                  }}
-                />
-              ) : controlItem.componentType === "select" ? (
-                <SelectComponent
-                  label={controlItem.label}
-                  options={controlItem.options}
-                  value={formData[controlItem.id]}
-                  onChange={(event) => {
-                    setFormData({
-                      ...formData,
-                      [controlItem.id]: event.target.value,
-                    });
-                  }}
-                />
-              ) : null
-            )}
-            <div className='text-right mt-8 space-x-6'>
-              <button className=' rounded hover:text-gray-600 px-4 py-2 text-gray-500 text-sm font-medium' >Cancel</button>
-              <button onClick={handleAddProduct} className='bg-green-500 hover:bg-green-600 rounded px-4 py-2 text-white text-sm font-medium' >Save</button>
+              <input
+                accept="image/*"
+                max="1000000"
+                type="file"
+                onChange={handleImage}
+              />
             </div>
-          </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-      <div>
-
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+      <div className="mx-2">
+        <div className="w-full max-w-md sm:max-w-xs rounded-md bg-[#0e7490] p-4 text-gray-900 shadow mt-8 space-y-6 ">
+          {adminAddProductformControls.map((controlItem) =>
+            controlItem.componentType === "input" ? (
+              <InputComponent
+                key={controlItem.label}
+                type={controlItem.type}
+                placeholder={controlItem.placeholder}
+                label={controlItem.label}
+                value={formData[controlItem.id]}
+                onChange={(event) => {
+                  setFormData({
+                    ...formData,
+                    [controlItem.id]: event.target.value,
+                  });
+                }}
+              />
+            ) : controlItem.componentType === "select" ? (
+              <SelectComponent
+                label={controlItem.label}
+                options={controlItem.options}
+                value={formData[controlItem.id]}
+                onChange={(event) => {
+                  setFormData({
+                    ...formData,
+                    [controlItem.id]: event.target.value,
+                  });
+                }}
+              />
+            ) : null
+          )}
+        </div>
+        <div className='text-right mt-8 space-x-6'>
+          <button className=' rounded hover:text-gray-600 px-4 py-2 text-gray-500 text-sm font-medium' >Cancel</button>
+          <button onClick={handleAddProduct} className='bg-green-500 hover:bg-green-600 rounded px-4 py-2 text-white text-sm font-medium' >Save</button>
+        </div>
       </div>
-    </Dialog.Root>
+    </>
   );
 }
 
