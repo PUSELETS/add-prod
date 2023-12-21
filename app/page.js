@@ -73,7 +73,6 @@ export default function AdminAddNewProduct() {
   const uploadImage = async (e) => {
     const file = e.target.files[0];
     const base64 = await convertBase64(file)
-    console.log(base64)
     setBase64Data(base64)
   };
 
@@ -177,6 +176,7 @@ export default function AdminAddNewProduct() {
                       width={0} height={0}
                       style={{ width: '100%', height: 'auto' }}
                       alt=''
+                      className="aspect-[1]"
                     ></Image>
                   </div>) :
                   (<div className="p-3 h-auto">
