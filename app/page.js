@@ -2,6 +2,7 @@
 
 import InputComponent from "./components/FormElements/InputComponent";
 import * as Dialog from '@radix-ui/react-dialog';
+import Image from 'next/image';
 import SelectComponent from "./components/FormElements/SelectComponent";
 import { addNewProduct } from "./services/product";
 import {
@@ -15,6 +16,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
@@ -67,8 +69,29 @@ export default function AdminAddNewProduct() {
     loading: false,
     id: "",
   });
+  const [base64Data, setBase64Data] = useState()
+  const uploadImage = async (e) => {
+    const file = e.target.files[0];
+    const base64 = await convertBase64(file)
+    console.log(base64)
+    setBase64Data(base64)
+  };
 
+  const convertBase64 = (file) => {
+    return new Promise((resolve, regect) => {
 
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+
+      fileReader.onerror = (error) => {
+        regect(error);
+      }
+    })
+  }
 
   useEffect(() => {
     if (currentUpdatedProduct !== null) setFormData(currentUpdatedProduct);
@@ -96,22 +119,6 @@ export default function AdminAddNewProduct() {
     })
   }, [imageA.length])
 
-
-  function handleTileClick(getCurrentItem) {
-    let cpySizes = [...formData.sizes];
-    const index = cpySizes.findIndex((item) => item.id === getCurrentItem.id);
-
-    if (index === -1) {
-      cpySizes.push(getCurrentItem);
-    } else {
-      cpySizes = cpySizes.filter((item) => item.id !== getCurrentItem.id);
-    }
-
-    setFormData({
-      ...formData,
-      sizes: cpySizes,
-    });
-  }
 
   async function handleAddProduct() {
     setComponentLevelLoader({ loading: true, id: "" });
@@ -156,24 +163,37 @@ export default function AdminAddNewProduct() {
                 <div className="relative">
                   <h2 className="font-semibold text-start text-gray-900">Add 5 0r Less Pictures</h2>
                   <div className="absolute inset-y-0 right-0">
-                    <button type="submit" className="font-medium text-sky-500">
+                    <button type="submit" onClick={handleImage} className="font-medium text-sky-500">
                       Save
                     </button>
                   </div>
                 </div>
               </div>
-              <div className="p-3 h-auto">
-                <div className="relative rounded-full aspect-[1]">
-                  <button className="absolute inset-0 flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-full aspect-[1]">
-                    <div className="w-24 h-24 text-gray-200">+</div>
-                  </button>
-                </div>
-              </div>
+              {
+                base64Data ?
+                  (<div className=" w-full h-[auto] aspect-[1]">
+                    <Image
+                      src={base64Data}
+                      width={0} height={0}
+                      style={{ width: '100%', height: 'auto' }}
+                      alt=''
+                    ></Image>
+                  </div>) :
+                  (<div className="p-3 h-auto">
+                    <div className="relative rounded-full aspect-[1]">
+                      <button className="absolute inset-0 flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-full aspect-[1]">
+                        <div className="w-24 h-24 text-gray-200">+</div>
+                      </button>
+                    </div>
+                  </div>)
+              }
               <input
                 accept="image/*"
                 max="1000000"
                 type="file"
-                onChange={handleImage}
+                onChange={(e) => {
+                  uploadImage(e);
+                }}
               />
             </div>
           </Dialog.Content>
