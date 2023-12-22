@@ -17,6 +17,7 @@
     "firebase": "^10.3.0",
     "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.1",
+    "@use-gesture/react": "^10.3.0",
     "mongoose": "^7.4.5",
     "node-fetch": "^3.3.2",
     "@radix-ui/react-dialog": "^1.0.5",

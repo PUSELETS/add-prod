@@ -2,7 +2,6 @@
 
 import InputComponent from "./components/FormElements/InputComponent";
 import * as Dialog from '@radix-ui/react-dialog';
-import Image from 'next/image';
 import SelectComponent from "./components/FormElements/SelectComponent";
 import { addNewProduct } from "./services/product";
 import {
@@ -16,8 +15,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-
-import { useRouter } from "next/navigation";
+import ImageCrop from "./imageCrop";
 import { useContext, useEffect, useState } from "react";
 
 import { resolve } from "styled-jsx/css";
@@ -170,15 +168,9 @@ export default function AdminAddNewProduct() {
               </div>
               {
                 base64Data ?
-                  (<div className=" w-full h-[auto] aspect-[1]">
-                    <Image
-                      src={base64Data}
-                      width={0} height={0}
-                      style={{ width: '100%', height: 'auto' }}
-                      alt=''
-                      className="aspect-[1]"
-                    ></Image>
-                  </div>) :
+                  (
+                    <ImageCrop src={base64Data} />
+                  ) :
                   (<div className="p-3 h-auto">
                     <div className="relative rounded-full aspect-[1]">
                       <button className="absolute inset-0 flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-full aspect-[1]">
