@@ -10,7 +10,7 @@ export default function ImageCrop({ src }) {
     const imageContainerRef = useRef();
 
     useGesture({
-        onDrag: ({ offset: [dx, dy] }) => {
+        onDrag: ({ movement: [dx, dy] }) => {
             setCrop((crop) => ({ ...crop, x: dx, y: dy }));
         },
         onPinch: ({ offset: [d] }) => {
@@ -24,11 +24,23 @@ export default function ImageCrop({ src }) {
 
             if(imageBounds.left > containerBounds.left) {
                 newCrop.x = 0;
+            } else if (imageBounds.right < containerBounds.right){
+                newCrop.x = -(imageBounds.width - containerBounds.width);
             }
+
+            if(imageBounds.top > containerBounds.top) {
+                newCrop.y = 0;
+            }else if (imageBounds.bottom < containerBounds.bottom){
+                newCrop.y = (imageBounds.height - containerBounds.height);
+            }
+
             setCrop(newCrop);
         },
 
     }, {
+        drag: {
+            from: ()=>[crop.x, crop.y]
+        },
         target: imageRef,
         eventOptions: { passive: false },
     });
