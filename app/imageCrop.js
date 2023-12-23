@@ -9,7 +9,7 @@ export default function ImageCrop({ src }) {
     const imageRef = useRef();
     const imageContainerRef = useRef();
 
-    console.log(crop.x)
+    console.log(crop.x, crop.y)
 
     useGesture({
         onDrag: ({ offset: [dx, dy] }) => {
@@ -60,8 +60,8 @@ export default function ImageCrop({ src }) {
 
     return (
         <>
-            <div className='overflow-hidden aspect-[1]'>
-                <div ref={imageContainerRef}>
+            <div ref={imageContainerRef} className='overflow-hidden aspect-[1]'>
+                <div >
                     <img
                         src={src}
                         ref={imageRef}
