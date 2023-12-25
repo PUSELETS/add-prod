@@ -30,50 +30,49 @@ export default function ImageCrop({ src }) {
 
             console.log("end")
 
-            if(imageBounds.left > containerBounds.left) {
+            if (imageBounds.left > containerBounds.left) {
                 newCrop.x = widthOverhang;
-            } else if (imageBounds.right < containerBounds.right){
+            } else if (imageBounds.right < containerBounds.right) {
                 newCrop.x = -(imageBounds.width - containerBounds.width) + widthOverhang;
             }
 
-            if(imageBounds.top > containerBounds.top) {
+            if (imageBounds.top > containerBounds.top) {
                 newCrop.y = heightOverhang;
-            }else if (imageBounds.bottom < containerBounds.bottom){
+            } else if (imageBounds.bottom < containerBounds.bottom) {
                 newCrop.y = (imageBounds.height - containerBounds.height) + heightOverhang;
             }
 
             setCrop(newCrop);
+            setCrop(newCrop)
         },
 
     }, {
         drag: {
-            from: ()=>[crop.x, crop.y]
+            from: () => [crop.x, crop.y]
         },
         pinch: {
-            distanceBounds: {min: 0},
+            distanceBounds: { min: 0 },
         },
         target: imageRef,
         eventOptions: { passive: false },
     });
-    
+
 
 
     return (
         <>
             <div ref={imageContainerRef} className='overflow-hidden aspect-[1]'>
-                <div >
-                    <img
-                        src={src}
-                        ref={imageRef}
-                        style={{
-                            left: crop.x,
-                            top: crop.y,
-                            transform: `scale(${crop.scale})`,
-                            touchAction: "none",
-                        }}
-                        className='relative object-contain w-full h-full max-w-none max-h-none'
-                    />
-                </div>
+                <img
+                    src={src}
+                    ref={imageRef}
+                    style={{
+                        left: crop.x,
+                        top: crop.y,
+                        transform: `scale(${crop.scale})`,
+                        touchAction: "none",
+                    }}
+                    className='relative object-contain w-full h-full max-w-none max-h-none'
+                />
             </div>
         </>
     )

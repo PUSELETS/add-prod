@@ -147,25 +147,15 @@ export default function AdminAddNewProduct() {
         </Dialog.Trigger>
         <Dialog.Portal className='z-10'>
           <Dialog.Overlay className='inset-0 bg-black/50 z-10' />
-          <Dialog.Content className='fixed z-10 w-full max-w-md sm:max-w-xs top-1/2 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white p-8 text-gray-900 shadow'>
-            <div className='flex justify-between items-center'>
+          <Dialog.Content className={`${base64Data? 'p-0' :'p-2'} fixed z-10 w-full max-w-md sm:max-w-xs top-1/2 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white p-2 text-gray-900 shadow`}>
+            <div className={`${base64Data? 'm-2': 'm-0'} flex justify-between items-center`}>
               <h2 className='text-xl'>Adding Product</h2>
               <Dialog.Close className='text-gray-400 hover:text-gray-500'>
                 exit
               </Dialog.Close>
             </div>
-            <div className="mt-8 space-y-6">
+            <div className="mt-8">
 
-              <div className="px-4 py-5">
-                <div className="relative">
-                  <h2 className="font-semibold text-start text-gray-900">Add 5 0r Less Pictures</h2>
-                  <div className="absolute inset-y-0 right-0">
-                    <button type="submit" onClick={handleImage} className="font-medium text-sky-500">
-                      Save
-                    </button>
-                  </div>
-                </div>
-              </div>
               {
                 base64Data ?
                   (
@@ -174,7 +164,7 @@ export default function AdminAddNewProduct() {
                   (<div className="p-3 h-auto">
                     <div className="relative rounded-full aspect-[1]">
                       <button className="absolute inset-0 flex flex-col items-center justify-center border-2 border-gray-300 border-dashed rounded-full aspect-[1]">
-                        <div className="w-24 h-24 text-gray-200">+</div>
+                        <div className="w-24 h-24 text-gray-200"></div>
                       </button>
                     </div>
                   </div>)
@@ -183,6 +173,7 @@ export default function AdminAddNewProduct() {
                 accept="image/*"
                 max="1000000"
                 type="file"
+                className="space-y-6"
                 onChange={(e) => {
                   uploadImage(e);
                 }}
