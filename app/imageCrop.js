@@ -9,8 +9,6 @@ export default function ImageCrop({ src }) {
     const imageRef = useRef();
     const imageContainerRef = useRef();
 
-    console.log(crop.x, crop.y)
-
     useGesture({
         onDrag: ({ offset: [dx, dy] }) => {
             setCrop((crop) => ({ ...crop, x: dx, y: dy }));
@@ -27,8 +25,6 @@ export default function ImageCrop({ src }) {
             const widthOverhang = (imageBounds.width - originalWidth) / 2;
             const originalHeight = imageRef.current.clientHeight;
             const heightOverhang = (imageBounds.width - originalHeight) / 2;
-
-            console.log("end")
 
             if (imageBounds.left > containerBounds.left) {
                 newCrop.x = widthOverhang;
