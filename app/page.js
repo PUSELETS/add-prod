@@ -147,7 +147,7 @@ export default function AdminAddNewProduct() {
         </Dialog.Trigger>
         <Dialog.Portal className='z-10'>
           <Dialog.Overlay className='inset-0 bg-black/50 z-10' />
-          <Dialog.Content className={`${base64Data? 'p-0' :'p-2'} fixed z-10 w-full max-w-md sm:max-w-xs top-1/2 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white p-2 text-gray-900 shadow`}>
+          <Dialog.Content className={`${base64Data? 'p-0' :'p-2'} fixed z-10 w-full max-w-md sm:max-w-xs top-1/2 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white/80 p-2 text-gray-900 shadow`}>
             <div className={`${base64Data? 'm-2': 'm-0'} flex justify-between items-center`}>
               <h2 className='text-xl'>Adding Product</h2>
               <Dialog.Close className='text-gray-400 hover:text-gray-500'>
@@ -183,7 +183,7 @@ export default function AdminAddNewProduct() {
         </Dialog.Portal>
       </Dialog.Root>
       <div className="mx-2">
-        <div className="w-full max-w-md sm:max-w-xs rounded-md bg-[#0e7490] p-4 text-gray-900 shadow mt-8 space-y-6 ">
+        <div className="w-full max-w-md sm:max-w-xs rounded-md bg-[#fca5a5] p-4 text-gray-900 shadow mt-8 space-y-6 ">
           {adminAddProductformControls.map((controlItem) =>
             controlItem.componentType === "input" ? (
               <InputComponent
