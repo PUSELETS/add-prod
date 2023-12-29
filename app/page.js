@@ -60,6 +60,7 @@ const initialFormData = {
 };
 
 export default function AdminAddNewProduct() {
+  const [crop, setCrop] = useState({ x: 0, y: 0, scale: 1 });
   const [formData, setFormData] = useState(initialFormData);
   const [imageA, setImageA] = useState([]);
   const [currentUpdatedProduct, setCurrentUpdatedProduct] = useState(null);
@@ -159,7 +160,7 @@ export default function AdminAddNewProduct() {
               {
                 base64Data ?
                   (
-                    <ImageCrop src={base64Data} />
+                    <ImageCrop src={base64Data} crop={crop} onCropChange={setCrop} />
                   ) :
                   (<div className="p-3 h-auto">
                     <div className="relative rounded-full aspect-[1]">

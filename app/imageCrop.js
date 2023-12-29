@@ -2,29 +2,37 @@
 import React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { useGesture } from '@use-gesture/react';
-import { Motion } from 'framer-motion';
+import { animate, motion, useMotionValue } from 'framer-motion';
 
-export default function ImageCrop({ src }) {
+export default function ImageCrop({ src, crop, onCropChange }) {
+    const x = useMotionValue(crop.x);
+    const y = useMotionValue(crop.y);
+    const scale = useMotionValue(crop.scale);
 
-    const [crop, setCrop] = useState({ x: 0, y: 0, scale: 1 });
     const imageRef = useRef();
     const imageContainerRef = useRef();
+    let animations = useRef([]);
 
     useGesture({
-        onDrag: ({ offset: [dx, dy] }) => {
-            setCrop((crop) => ({ ...crop, x: dx, y: dy }));
+        onDrag: ({ movement: [dx, dy] }) => {
+            animations.current.forEach((a)=> a.stop());
+
+            x.set(dx);
+            y.set(dy);
         },
         onPinch: ({
-            memo, 
+            memo,
             origin: [pinchOriginX, pinchOriginY],
-            movement: [md],
             offset: [d], }) => {
-            
+            animations.current.forEach((a)=> a.stop());
+
             memo ??= {
                 bounds: imageRef.current.getBoundingClientRect(),
-                crop
-            }
-    
+                crop: {
+                    x: x.get(), y: y.get(), scale: scale.get(),
+                }
+            };
+
             const transformOriginX = memo.bounds.x + memo.bounds.width / 2;
             const transformOriginY = memo.bounds.y + memo.bounds.height / 2;
 
@@ -34,14 +42,11 @@ export default function ImageCrop({ src }) {
             const initialOffsetDistance = (memo.crop.scale - 1) * 50;
             const movementDistance = d - initialOffsetDistance
 
-            setCrop((crop) => ({ 
-            ...crop,
-             scale: 1 + d / 50, 
-             x: memo.crop.x + (displacementX * movementDistance) / 50,
-             y: memo.crop.y + (displacementY * movementDistance) / 50
-              }));
+            scale.set(1 + d / 50);
+            x.set(memo.crop.x + (displacementX * movementDistance) / 50);
+            y.set(memo.crop.y + (displacementY * movementDistance) / 50);
 
-              return memo
+            return memo
         },
 
         onDragEnd: maybeaImage,
@@ -49,7 +54,7 @@ export default function ImageCrop({ src }) {
 
     }, {
         drag: {
-            from: () => [crop.x, crop.y]
+            from: () => [x.get(), y.get()],
         },
         pinch: {
             distanceBounds: { min: 0 },
@@ -59,7 +64,9 @@ export default function ImageCrop({ src }) {
     });
 
     function maybeaImage() {
-        const newCrop = crop;
+        const newCrop = {
+            x: x.get(), y: y.get(), scale: scale.get(),
+        };
         const imageBounds = imageRef.current.getBoundingClientRect();
         const containerBounds = imageContainerRef.current.getBoundingClientRect();
         const originalWidth = imageRef.current.clientWidth;
@@ -79,20 +86,23 @@ export default function ImageCrop({ src }) {
             newCrop.y = (imageBounds.height - containerBounds.height) + heightOverhang;
         }
 
-        setCrop(newCrop);
-        setCrop(newCrop)
+        animations.current = [
+            animate(x, newCrop.x),
+            animate(y, newCrop.y),
+        ];
+        onCropChange(newCrop)
     }
 
     return (
         <>
             <div ref={imageContainerRef} className='overflow-hidden aspect-[1]'>
-                <img
+                <motion.img
                     src={src}
                     ref={imageRef}
                     style={{
-                        left: crop.x,
-                        top: crop.y,
-                        transform: `scale(${crop.scale})`,
+                        x: x,
+                        y: y,
+                        scale: scale,
                         touchAction: "none",
                     }}
                     className='relative object-contain w-full h-full max-w-none max-h-none'
