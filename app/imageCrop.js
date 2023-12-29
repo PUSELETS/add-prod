@@ -14,8 +14,34 @@ export default function ImageCrop({ src }) {
         onDrag: ({ offset: [dx, dy] }) => {
             setCrop((crop) => ({ ...crop, x: dx, y: dy }));
         },
-        onPinch: ({ offset: [d] }) => {
-            setCrop((crop) => ({ ...crop, scale: 1 + d / 50 }));
+        onPinch: ({
+            memo, 
+            origin: [pinchOriginX, pinchOriginY],
+            movement: [md],
+            offset: [d], }) => {
+            
+            memo ??= {
+                bounds: imageRef.current.getBoundingClientRect(),
+                crop
+            }
+    
+            const transformOriginX = memo.bounds.x + memo.bounds.width / 2;
+            const transformOriginY = memo.bounds.y + memo.bounds.height / 2;
+
+            const displacementX = (transformOriginX - pinchOriginX) / memo.crop.scale;
+            const displacementY = (transformOriginY - pinchOriginY) / memo.crop.scale;
+
+            const initialOffsetDistance = (memo.crop.scale - 1) * 50;
+            const movementDistance = d - initialOffsetDistance
+
+            setCrop((crop) => ({ 
+            ...crop,
+             scale: 1 + d / 50, 
+             x: memo.crop.x + (displacementX * movementDistance) / 50,
+             y: memo.crop.y + (displacementY * movementDistance) / 50
+              }));
+
+              return memo
         },
 
         onDragEnd: maybeaImage,
