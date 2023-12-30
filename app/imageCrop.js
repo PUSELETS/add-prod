@@ -41,7 +41,6 @@ export default function ImageCrop({ src, crop, onCropChange }) {
             memo,
             origin: [pinchOriginX, pinchOriginY],
             offset: [d], }) => {
-            Event.preventDefault()
             setIsPinching(pinching)
              
             x.stop();
