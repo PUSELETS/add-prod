@@ -114,8 +114,8 @@ export default function ImageCrop({ src, crop, onCropChange }) {
 
     return (
         <>
-            <div ref={imageContainerRef} className='overflow-hidden aspect-[1]'>
-                <div>
+            <div ref={imageContainerRef} className='relative overflow-hidden aspect-[1]'>
+                <div className='relative overflow-hidden'>
                     <motion.img
                         src={src}
                         ref={imageRef}
