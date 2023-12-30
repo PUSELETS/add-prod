@@ -5,28 +5,46 @@ import { useGesture } from '@use-gesture/react';
 import { animate, motion, useMotionValue } from 'framer-motion';
 
 export default function ImageCrop({ src, crop, onCropChange }) {
-    const x = useMotionValue(crop.x);
-    const y = useMotionValue(crop.y);
-    const scale = useMotionValue(crop.scale);
+    let x = useMotionValue(crop.x);
+    let y = useMotionValue(crop.y);
+    let scale = useMotionValue(crop.scale);
+    let [isDragging, setIsDragging] = useState(false);
+    let [isPinching, setIsPinching] = useState(false)
 
     const imageRef = useRef();
     const imageContainerRef = useRef();
-    let animations = useRef([]);
-
-    console.log(crop)
 
     useGesture({
-        onDrag: ({ offset: [dx, dy] }) => {
-            animations.current.forEach((a) => a.stop());
+        onDrag: ({ dragging, offset: [dx, dy] }) => {
+            setIsDragging(dragging);
+            x.stop();
+            y.stop();
 
-            x.set(dx);
-            y.set(dy);
+            const imageBounds = imageRef.current.getBoundingClientRect();
+            const containerBounds = imageContainerRef.current.getBoundingClientRect();
+            const originalWidth = imageRef.current.clientWidth;
+            const widthOverhang = (imageBounds.width - originalWidth) / 2;
+            const originalHeight = imageRef.current.clientHeight;
+            const heightOverhang = (imageBounds.width - originalHeight) / 2;
+
+            let maxX = widthOverhang;
+            let minX = -(imageBounds.width - containerBounds.width) + widthOverhang;
+            let maxY = heightOverhang;
+            let minY = -(imageBounds.height - containerBounds.height) + heightOverhang;
+
+
+            x.set(dampen(dx, [minX, maxX]));
+            y.set(dampen(dy, [minY, maxY]));
         },
         onPinch: ({
+            pinching,
             memo,
             origin: [pinchOriginX, pinchOriginY],
             offset: [d], }) => {
-            animations.current.forEach((a) => a.stop());
+            Event.preventDefault()
+            setIsPinching(pinching)
+            x.stop();
+            y.stop();
 
             memo ??= {
                 bounds: imageRef.current.getBoundingClientRect(),
@@ -88,10 +106,9 @@ export default function ImageCrop({ src, crop, onCropChange }) {
             newCrop.y = -(imageBounds.height - containerBounds.height) + heightOverhang;
         }
 
-        animations.current = [
-            animate(x, newCrop.x),
-            animate(y, newCrop.y),
-        ];
+
+        animate(x, newCrop.x, { type: "tween", duration: 0.4, ease: [0.25, 1, 0.5, 1] });
+        animate(y, newCrop.y, { type: "tween", duration: 0.4, ease: [0.25, 1, 0.5, 1] });
         onCropChange(newCrop)
     }
 
@@ -110,8 +127,34 @@ export default function ImageCrop({ src, crop, onCropChange }) {
                         }}
                         className='relative w-full h-full max-w-none max-h-none'
                     />
+                    <div className={`pointer-events-none absolute inset-0 transition duration-300 ${isDragging || isPinching ? 'opacity-100' : 'opacity-0'}`}>
+                        <div className='absolute inset-0 flex flex-col'>
+                            <div className='self-strech flex-1 border-b border-gray-50'></div>
+                            <div className='self-strech flex-1 border-b border-gray-50'></div>
+                            <div className='self-strech flex-1'></div>
+                        </div>
+                        <div className='absolute inset-0 flex'>
+                            <div className='self-strech flex-1 border-r border-gray-50'></div>
+                            <div className='self-strech flex-1 border-r border-gray-50'></div>
+                            <div className='self-strech flex-1'></div>
+                        </div>
+                    </div>
                 </div>
-            </div> 
+            </div>
         </>
     )
+}
+
+function dampen(val, [min, max]) {
+    if (val > max) {
+        let extra = val - max;
+        let dampenedExtra = extra > 0 ? Math.sqrt(extra) : -Math.sqrt(-extra);
+        return max + dampenedExtra * 2;
+    } else if (val < min) {
+        let extra = val - min;
+        let dampenedExtra = extra > 0 ? Math.sqrt(extra) : -Math.sqrt(-extra);
+        return max + dampenedExtra * 2;
+    } else {
+        return val
+    }
 }
