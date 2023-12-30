@@ -13,9 +13,11 @@ export default function ImageCrop({ src, crop, onCropChange }) {
     const imageContainerRef = useRef();
     let animations = useRef([]);
 
+    console.log(crop)
+
     useGesture({
-        onDrag: ({ movement: [dx, dy] }) => {
-            animations.current.forEach((a)=> a.stop());
+        onDrag: ({ offset: [dx, dy] }) => {
+            animations.current.forEach((a) => a.stop());
 
             x.set(dx);
             y.set(dy);
@@ -24,7 +26,7 @@ export default function ImageCrop({ src, crop, onCropChange }) {
             memo,
             origin: [pinchOriginX, pinchOriginY],
             offset: [d], }) => {
-            animations.current.forEach((a)=> a.stop());
+            animations.current.forEach((a) => a.stop());
 
             memo ??= {
                 bounds: imageRef.current.getBoundingClientRect(),
@@ -83,7 +85,7 @@ export default function ImageCrop({ src, crop, onCropChange }) {
         if (imageBounds.top > containerBounds.top) {
             newCrop.y = heightOverhang;
         } else if (imageBounds.bottom < containerBounds.bottom) {
-            newCrop.y = (imageBounds.height - containerBounds.height) + heightOverhang;
+            newCrop.y = -(imageBounds.height - containerBounds.height) + heightOverhang;
         }
 
         animations.current = [
@@ -96,17 +98,19 @@ export default function ImageCrop({ src, crop, onCropChange }) {
     return (
         <>
             <div ref={imageContainerRef} className='overflow-hidden aspect-[1]'>
-                <motion.img
-                    src={src}
-                    ref={imageRef}
-                    style={{
-                        x: x,
-                        y: y,
-                        scale: scale,
-                        touchAction: "none",
-                    }}
-                    className='relative object-contain w-full h-full max-w-none max-h-none'
-                />
+                <div>
+                    <motion.img
+                        src={src}
+                        ref={imageRef}
+                        style={{
+                            x: x,
+                            y: y,
+                            scale: scale,
+                            touchAction: "none",
+                        }}
+                        className='relative w-auto h-full max-w-none max-h-none'
+                    />
+                </div>
             </div>
         </>
     )
