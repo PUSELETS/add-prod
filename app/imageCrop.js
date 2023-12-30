@@ -41,7 +41,9 @@ export default function ImageCrop({ src, crop, onCropChange }) {
             memo,
             origin: [pinchOriginX, pinchOriginY],
             offset: [d], }) => {
+            Event.preventDefault()
             setIsPinching(pinching)
+             
             x.stop();
             y.stop();
 
@@ -114,7 +116,7 @@ export default function ImageCrop({ src, crop, onCropChange }) {
     return (
         <>
             <div ref={imageContainerRef} className='relative overflow-hidden aspect-[1]'>
-                <div className='overflow-hidden'>
+                <div className=' overflow-hidden'>
                     <motion.img
                         src={src}
                         ref={imageRef}
@@ -152,7 +154,7 @@ function dampen(val, [min, max]) {
     } else if (val < min) {
         let extra = val - min;
         let dampenedExtra = extra > 0 ? Math.sqrt(extra) : -Math.sqrt(-extra);
-        return max + dampenedExtra * 2;
+        return min + dampenedExtra * 2;
     } else {
         return val
     }
