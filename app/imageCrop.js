@@ -108,7 +108,7 @@ export default function ImageCrop({ src, crop, onCropChange }) {
                             scale: scale,
                             touchAction: "none",
                         }}
-                        className='relative w-auto h-full '
+                        className='relative w-auto h-full max-w-none max-h-none'
                     />
                 </div>
             </div>
