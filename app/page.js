@@ -160,7 +160,7 @@ export default function AdminAddNewProduct() {
               {
                 base64Data ?
                   (
-                    <ImageCrop src={base64Data} crop={crop} onCropChange={setCrop} />
+                    <ImageCrop src={base64Data} crop={crop} onCropChange={setCrop} aspectRatio={1} />
                   ) :
                   (<div className="p-3 h-auto">
                     <div className="relative rounded-full aspect-[1]">

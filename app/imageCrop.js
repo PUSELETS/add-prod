@@ -41,7 +41,6 @@ export default function ImageCrop({ src, crop, onCropChange }) {
             memo,
             origin: [pinchOriginX, pinchOriginY],
             offset: [d], }) => {
-            Event.preventDefault()
             setIsPinching(pinching)
             x.stop();
             y.stop();
@@ -115,7 +114,7 @@ export default function ImageCrop({ src, crop, onCropChange }) {
     return (
         <>
             <div ref={imageContainerRef} className='relative overflow-hidden aspect-[1]'>
-                <div className='relative overflow-hidden'>
+                <div className='overflow-hidden'>
                     <motion.img
                         src={src}
                         ref={imageRef}
