@@ -1,5 +1,5 @@
 "use client";
-
+import 'react-image-crop/dist/ReactCrop.css';
 import InputComponent from "./components/FormElements/InputComponent";
 import * as Dialog from '@radix-ui/react-dialog';
 import SelectComponent from "./components/FormElements/SelectComponent";
@@ -16,9 +16,8 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import ImageCrop from "./imageCrop";
-import { useContext, useEffect, useState } from "react";
-
-import { resolve } from "styled-jsx/css";
+import { useEffect, useState } from "react";
+import { ImageCropper } from './imageCropper2';
 
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app, firebaseStroageURL);
@@ -28,12 +27,14 @@ const createUniqueFileName = (getFile) => {
   const randomStringValue = Math.random().toString(36).substring(2, 12);
 
   return `${getFile.name}-${timeStamp}-${randomStringValue}`;
-};
+}; 
 
-async function helperForUPloadingImageToFirebase(file) {
-  const getFileName = createUniqueFileName(file);
+
+async function helperForUPloadingImageToFirebase({base64Data}) {
+  const getFileName = createUniqueFileName(base64Data);
   const storageReference = ref(storage, `ecommerce/${getFileName}`);
-  const uploadImage = uploadBytesResumable(storageReference, file);
+  const uploadImage = uploadBytesResumable(storageReference, base64Data);
+
 
   return new Promise((resolve, reject) => {
     uploadImage.on(
@@ -59,6 +60,7 @@ const initialFormData = {
   imageUrl: [],
 };
 
+
 export default function AdminAddNewProduct() {
   const [crop, setCrop] = useState({ x: 0, y: 0, scale: 1 });
   const [formData, setFormData] = useState(initialFormData);
@@ -68,7 +70,9 @@ export default function AdminAddNewProduct() {
     loading: false,
     id: "",
   });
-  const [base64Data, setBase64Data] = useState()
+  const [base64Data, setBase64Data] = useState();
+
+
   const uploadImage = async (e) => {
     const file = e.target.files[0];
     const base64 = await convertBase64(file)
@@ -95,11 +99,11 @@ export default function AdminAddNewProduct() {
     if (currentUpdatedProduct !== null) setFormData(currentUpdatedProduct);
   }, [currentUpdatedProduct]);
 
-  async function handleImage(event) {
-    const extractImageUrl = await helperForUPloadingImageToFirebase(
-      event.target.files[0]
-    );
+  async function handleImage(base64Data) {
 
+    const extractImageUrl = await helperForUPloadingImageToFirebase(
+      base64Data
+    );
 
     if (extractImageUrl !== "") {
       if (imageA.length > 5) {
@@ -160,7 +164,7 @@ export default function AdminAddNewProduct() {
               {
                 base64Data ?
                   (
-                    <ImageCrop src={base64Data} crop={crop} onCropChange={setCrop} aspectRatio={1} />
+                    <ImageCropper src={base64Data} />
                   ) :
                   (<div className="p-3 h-auto">
                     <div className="relative rounded-full aspect-[1]">
@@ -174,11 +178,14 @@ export default function AdminAddNewProduct() {
                 accept="image/*"
                 max="1000000"
                 type="file"
-                className="space-y-6"
+                className="block w-full text-sm text-slate-500 file:rounded-full file:text-xs file:border-0 file:bg-yellow-300 file:text-sky-300 hover:file:bg-yellow-500"
                 onChange={(e) => {
                   uploadImage(e);
                 }}
               />
+              <button onClick={handleImage}>
+                add
+              </button>
             </div>
           </Dialog.Content>
         </Dialog.Portal>

@@ -9,7 +9,7 @@ export default function ImageCrop({ src, crop, onCropChange }) {
     let y = useMotionValue(crop.y);
     let scale = useMotionValue(crop.scale);
     let [isDragging, setIsDragging] = useState(false);
-    let [isPinching, setIsPinching] = useState(false)
+    let [isPinching, setIsPinching] = useState(false);
 
     const imageRef = useRef();
     const imageContainerRef = useRef();
@@ -77,7 +77,7 @@ export default function ImageCrop({ src, crop, onCropChange }) {
             from: () => [x.get(), y.get()],
         },
         pinch: {
-            distanceBounds: { min: 0 },
+            distanceBounds: { min: -1 },
         },
         target: imageRef,
         eventOptions: { passive: false },
@@ -129,13 +129,13 @@ export default function ImageCrop({ src, crop, onCropChange }) {
                     />
                     <div className={`pointer-events-none absolute inset-0 transition duration-300 ${isDragging || isPinching ? 'opacity-100' : 'opacity-0'}`}>
                         <div className='absolute inset-0 flex flex-col'>
-                            <div className='self-strech flex-1 border-b border-gray-50'></div>
-                            <div className='self-strech flex-1 border-b border-gray-50'></div>
+                            <div className='self-strech flex-1 border-b border-gray-50/70'></div>
+                            <div className='self-strech flex-1 border-b border-gray-50/70'></div>
                             <div className='self-strech flex-1'></div>
                         </div>
                         <div className='absolute inset-0 flex'>
-                            <div className='self-strech flex-1 border-r border-gray-50'></div>
-                            <div className='self-strech flex-1 border-r border-gray-50'></div>
+                            <div className='self-strech flex-1 border-r border-gray-50/70'></div>
+                            <div className='self-strech flex-1 border-r border-gray-50/70'></div>
                             <div className='self-strech flex-1'></div>
                         </div>
                     </div>
@@ -149,11 +149,11 @@ function dampen(val, [min, max]) {
     if (val > max) {
         let extra = val - max;
         let dampenedExtra = extra > 0 ? Math.sqrt(extra) : -Math.sqrt(-extra);
-        return max + dampenedExtra * 2;
+        return max + dampenedExtra * 3;
     } else if (val < min) {
         let extra = val - min;
         let dampenedExtra = extra > 0 ? Math.sqrt(extra) : -Math.sqrt(-extra);
-        return min + dampenedExtra * 2;
+        return min + dampenedExtra * 3;
     } else {
         return val
     }
