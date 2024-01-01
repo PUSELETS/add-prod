@@ -95,6 +95,10 @@ export default function AdminAddNewProduct() {
     })
   }
 
+  const addToFireBase = (dataURL) =>{
+    console.log(dataURL);
+  }
+
   useEffect(() => {
     if (currentUpdatedProduct !== null) setFormData(currentUpdatedProduct);
   }, [currentUpdatedProduct]);
@@ -164,7 +168,7 @@ export default function AdminAddNewProduct() {
               {
                 base64Data ?
                   (
-                    <ImageCropper src={base64Data} />
+                    <ImageCropper src={base64Data} addToFireBase={addToFireBase} />
                   ) :
                   (<div className="p-3 h-auto">
                     <div className="relative rounded-full aspect-[1]">
