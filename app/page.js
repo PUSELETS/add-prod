@@ -15,7 +15,6 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import ImageCrop from "./imageCrop";
 import { useEffect, useState } from "react";
 import { ImageCropper } from './imageCropper2';
 
@@ -27,10 +26,10 @@ const createUniqueFileName = (getFile) => {
   const randomStringValue = Math.random().toString(36).substring(2, 12);
 
   return `${getFile.name}-${timeStamp}-${randomStringValue}`;
-}; 
+};
 
 
-async function helperForUPloadingImageToFirebase({base64Data}) {
+async function helperForUPloadingImageToFirebase({ base64Data }) {
   const getFileName = createUniqueFileName(base64Data);
   const storageReference = ref(storage, `ecommerce/${getFileName}`);
   const uploadImage = uploadBytesResumable(storageReference, base64Data);
@@ -71,6 +70,7 @@ export default function AdminAddNewProduct() {
     id: "",
   });
   const [base64Data, setBase64Data] = useState();
+  const [resivedImg, setResivedImg] = useState();
 
 
   const uploadImage = async (e) => {
@@ -95,8 +95,9 @@ export default function AdminAddNewProduct() {
     })
   }
 
-  const addToFireBase = (dataURL) =>{
+  const addToFireBase = (dataURL) => {
     console.log(dataURL);
+    setResivedImg(dataURL)
   }
 
   useEffect(() => {
@@ -156,8 +157,8 @@ export default function AdminAddNewProduct() {
         </Dialog.Trigger>
         <Dialog.Portal className='z-10'>
           <Dialog.Overlay className='inset-0 bg-black/50 z-10' />
-          <Dialog.Content className={`${base64Data? 'p-0' :'p-2'} fixed z-10 w-full max-w-md sm:max-w-xs top-1/2 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white/80 p-2 text-gray-900 shadow`}>
-            <div className={`${base64Data? 'm-2': 'm-0'} flex justify-between items-center`}>
+          <Dialog.Content className={`${base64Data ? 'p-0' : 'p-2'} fixed z-10 w-full max-w-md sm:max-w-xs top-1/2 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white/80 p-2 text-gray-900 shadow`}>
+            <div className={`${base64Data ? 'm-2' : 'm-0'} flex justify-between items-center`}>
               <h2 className='text-xl'>Adding Product</h2>
               <Dialog.Close className='text-gray-400 hover:text-gray-500'>
                 exit
@@ -225,6 +226,12 @@ export default function AdminAddNewProduct() {
               />
             ) : null
           )}
+          <img
+            src={resivedImg}
+            width={0}
+            height={0}
+            className='relative w-full h-full max-w-none max-h-none'
+          />
         </div>
         <div className='text-right mt-8 space-x-6'>
           <button className=' rounded hover:text-gray-600 px-4 py-2 text-gray-500 text-sm font-medium' >Cancel</button>
