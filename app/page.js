@@ -74,7 +74,6 @@ export default function AdminAddNewProduct() {
       alert('image uploaded')
       return grap2
     })
-    console.log(grap)
     return grap
   }
 
@@ -126,8 +125,6 @@ export default function AdminAddNewProduct() {
       setFormData(initialFormData);
     }
   }
-
-  console.log(imageA);
 
   return (
     <>
