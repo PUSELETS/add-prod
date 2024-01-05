@@ -7,7 +7,7 @@ import setCanvasPreview from './setCanvasPreview';
 const ASPECt_Ratio = 1;
 const MIN_DIMENTION = 150;
 
-export function ImageCropper({ src, addToFireBase }) {
+export function ImageCropper({ src, addToFireBase, handleImage }) {
 
     const [imageSrc, setImagrSrc] = useState(src);
     const [crop, setCrop] = useState();
@@ -62,7 +62,9 @@ export function ImageCropper({ src, addToFireBase }) {
                         )
                     );
                     const dataURL = previewCanvaRef.current.toDataURL()
-                    addToFireBase(dataURL)
+                    addToFireBase(dataURL);
+                    handleImage(dataURL)
+                    
                 }}
                 >
                     Crop Image

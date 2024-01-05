@@ -3,6 +3,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import InputComponent from "./components/FormElements/InputComponent";
 import * as Dialog from '@radix-ui/react-dialog';
 import SelectComponent from "./components/FormElements/SelectComponent";
+import { v4 } from 'uuid';
 import { addNewProduct } from "./services/product";
 import {
   adminAddProductformControls, firebaseConfig,
@@ -13,44 +14,13 @@ import {
   getDownloadURL,
   getStorage,
   ref,
-  uploadBytesResumable,
+  uploadString,
 } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { ImageCropper } from './imageCropper2';
 
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app, firebaseStroageURL);
-
-const createUniqueFileName = (getFile) => {
-  const timeStamp = Date.now();
-  const randomStringValue = Math.random().toString(36).substring(2, 12);
-
-  return `${getFile.name}-${timeStamp}-${randomStringValue}`;
-};
-
-
-async function helperForUPloadingImageToFirebase({ base64Data }) {
-  const getFileName = createUniqueFileName(base64Data);
-  const storageReference = ref(storage, `ecommerce/${getFileName}`);
-  const uploadImage = uploadBytesResumable(storageReference, base64Data);
-
-
-  return new Promise((resolve, reject) => {
-    uploadImage.on(
-      "state_changed",
-      (snapshot) => { },
-      (error) => {
-        console.log(error);
-        reject(error);
-      },
-      () => {
-        getDownloadURL(uploadImage.snapshot.ref)
-          .then((downloadUrl) => resolve(downloadUrl))
-          .catch((error) => reject(error));
-      }
-    );
-  });
-}
 
 const initialFormData = {
   name: "",
@@ -61,7 +31,6 @@ const initialFormData = {
 
 
 export default function AdminAddNewProduct() {
-  const [crop, setCrop] = useState({ x: 0, y: 0, scale: 1 });
   const [formData, setFormData] = useState(initialFormData);
   const [imageA, setImageA] = useState([]);
   const [currentUpdatedProduct, setCurrentUpdatedProduct] = useState(null);
@@ -72,6 +41,7 @@ export default function AdminAddNewProduct() {
   const [base64Data, setBase64Data] = useState();
   const [resivedImg, setResivedImg] = useState();
 
+  
 
   const uploadImage = async (e) => {
     const file = e.target.files[0];
@@ -95,20 +65,26 @@ export default function AdminAddNewProduct() {
     })
   }
 
+  async function helperForUPloadingImageToFirebase(dataURL) {
+    const storageReference = ref(storage, `theShop/${v4()}`);
+    const grap = uploadString(storageReference, dataURL, 'data_url' ).then(data=>{
+    const grap2 = getDownloadURL(data.ref).then(val=>{
+        return val
+      });
+      alert('image uploaded')
+      return grap2
+    })
+    console.log(grap)
+    return grap
+  }
+
   const addToFireBase = (dataURL) => {
-    console.log(dataURL);
     setResivedImg(dataURL)
   }
 
-  useEffect(() => {
-    if (currentUpdatedProduct !== null) setFormData(currentUpdatedProduct);
-  }, [currentUpdatedProduct]);
+  async function handleImage(dataURL) {
+    const extractImageUrl = await helperForUPloadingImageToFirebase( dataURL );
 
-  async function handleImage(base64Data) {
-
-    const extractImageUrl = await helperForUPloadingImageToFirebase(
-      base64Data
-    );
 
     if (extractImageUrl !== "") {
       if (imageA.length > 5) {
@@ -118,6 +94,10 @@ export default function AdminAddNewProduct() {
     }
 
   }
+
+  useEffect(() => {
+    if (currentUpdatedProduct !== null) setFormData(currentUpdatedProduct);
+  }, [currentUpdatedProduct]);
 
   useEffect(() => {
     if (imageA.length > 0 && imageA.length <= 5) setFormData({
@@ -147,7 +127,7 @@ export default function AdminAddNewProduct() {
     }
   }
 
-
+  console.log(imageA);
 
   return (
     <>
@@ -169,7 +149,7 @@ export default function AdminAddNewProduct() {
               {
                 base64Data ?
                   (
-                    <ImageCropper src={base64Data} addToFireBase={addToFireBase} />
+                    <ImageCropper src={base64Data} addToFireBase={addToFireBase} handleImage={handleImage} />
                   ) :
                   (<div className="p-3 h-auto">
                     <div className="relative rounded-full aspect-[1]">
@@ -188,9 +168,6 @@ export default function AdminAddNewProduct() {
                   uploadImage(e);
                 }}
               />
-              <button onClick={handleImage}>
-                add
-              </button>
             </div>
           </Dialog.Content>
         </Dialog.Portal>
